@@ -3,31 +3,32 @@
 //
 #include "snowman.hpp"
 #include <stdexcept>
-#define SIZE 8
+#include <array>
+constexpr int SIZE = 8;
+constexpr int PARTS_SIZE = 4;
 
 using namespace std;
-
-const char *hat[7] = {"_===_", "___", ".....", "_", "/_\\", "___", "(_*_)"};
-const char *nose[4] = {",", ".", "_", " "};
-const char *leftEye[4] = {".", "o", "O", "-"};
-const char *rightEye[4] = {".", "o", "O", "-"};
-const char *leftArm[4] = {"<", "\\", "/", ""};
-const char *rightArm[4] = {">", "/", "\\", ""};
-const char *torso[4] = {" : ", "] [", "> <", "   "};
-const char *base[4] = {" : ", "\" \"", "___", "   "};
+array<string, SIZE - 1> hat = {"_===_", "___", ".....", "_", "/_\\", "___", "(_*_)"};
+array<string, PARTS_SIZE> nose = {",", ".", "_", " "};
+array<string, PARTS_SIZE> leftEye = {".", "o", "O", "-"};
+array<string, PARTS_SIZE> rightEye = {".", "o", "O", "-"};
+array<string, PARTS_SIZE> leftArm = {"<", "\\", "/", ""};
+array<string, PARTS_SIZE> rightArm= {">", "/", "\\", ""};
+array<string, PARTS_SIZE> torso = {" : ", "] [", "> <", "   "};
+array<string, PARTS_SIZE> base = {" : ", "\" \"", "___", "   "};
 int arr[SIZE];
 bool flag = false;
 
 /*inner function for input validity checkout*/
 void inputCheck(int num) {
     string components = to_string(num);
-    if (components.length() != 8) {
+    if (components.length() != SIZE) {
         throw length_error{"Invalid code "};
     }
     if (num <= 0){
         throw out_of_range{"input must be positive!"};
     }
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 0; i < SIZE; ++i) {
         if (components[i] - '0' > 4 || components[i] - '0' < 1) {
             throw out_of_range{"each digit must be between 1 - 4! "};
         }
@@ -58,25 +59,25 @@ namespace ariel {
                     //"___
                     //....."
                     if (input == 1) {
-                        ans += hat[1];
-                        ans += hat[2];
+                        ans += hat.at(1);
+                        ans += hat.at(2);
                     }
                         //" _
                         // /_\"
                     else if (input == 2) {
-                        ans += hat[3];
-                        ans += hat[4];
+                        ans += hat.at(3);
+                        ans += hat.at(4);
                     }
                         // ___
                         //(_*_)
                     else if (input == 3) {
-                        ans += hat[5];
+                        ans += hat.at(5);
                         //ans += " ";
-                        ans += hat[6];
+                        ans += hat.at(6);
                     }
                         //_===_
                     else {
-                        ans += hat[input];
+                        ans += hat.at(input);
                     }
                     break;
 
@@ -84,24 +85,24 @@ namespace ariel {
                 case 1:
                     //if the left hand is up
                     if (arr[4] == 2) {
-                        ans += (leftArm[1]);
+                        ans += (leftArm.at(1));
                     }
                     ans += "(";
-                    ans += (leftEye[input]);
+                    ans += (leftEye.at(input));
                     break;
 
                 //nose case
                 case 2:
-                    ans += (nose[input]);
+                    ans += (nose.at(input));
                     break;
 
                 //right eye case
                 case 3:
-                    ans += (rightEye[input]);
+                    ans += (rightEye.at(input));
                     ans += ")";
                     //if the right hand is up
                     if (arr[6] == 2) {
-                        ans += (rightArm[1]);
+                        ans += (rightArm.at(1));
                     }
                     break;
 
@@ -109,14 +110,14 @@ namespace ariel {
                 case 4:
                     //if the hand isn't up
                     if (arr[4] != 2) {
-                        ans += (leftArm[input]);
+                        ans += (leftArm.at(input));
                     }
                     break;
 
                 //torso case
                 case 5:
                     ans += "(";
-                    ans += (torso[input]);
+                    ans += (torso.at(input));
                     break;
 
                 //right arm case
@@ -124,17 +125,20 @@ namespace ariel {
                     ans += ")";
                     //if the right arm isn't up
                     if (arr[6] != 2) {
-                        ans += (rightArm[input]);
+                        ans += (rightArm.at(input));
                     }
                     break;
 
                 //base case
                 case 7:
                     ans += "(";
-                    ans += (base[input]);
+                    ans += (base.at(input));
                     ans += ")";
                     break;
+                default:
+                    continue;
             }
+
         }
         return ans;
     }
