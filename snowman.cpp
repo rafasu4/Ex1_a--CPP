@@ -4,19 +4,29 @@
 #include "snowman.hpp"
 #include <stdexcept>
 #include <array>
+
 constexpr int SIZE = 8;
 constexpr int PARTS_SIZE = 4;
+constexpr int hatIndex = 0;
+constexpr int noseIndex = 2;
+constexpr int leftEyeIndex = 1;
+constexpr int rightEyeIndex = 3;
+constexpr int leftArmIndex = 4;
+constexpr int rightArmIndex = 6;
+constexpr int torsoIndex = 5;
+constexpr int baseIndex = 7;
 
 using namespace std;
+
 array<string, SIZE - 1> hat = {"_===_", "___", ".....", "_", "/_\\", "___", "(_*_)"};
 array<string, PARTS_SIZE> nose = {",", ".", "_", " "};
 array<string, PARTS_SIZE> leftEye = {".", "o", "O", "-"};
 array<string, PARTS_SIZE> rightEye = {".", "o", "O", "-"};
 array<string, PARTS_SIZE> leftArm = {"<", "\\", "/", ""};
-array<string, PARTS_SIZE> rightArm= {">", "/", "\\", ""};
+array<string, PARTS_SIZE> rightArm = {">", "/", "\\", ""};
 array<string, PARTS_SIZE> torso = {" : ", "] [", "> <", "   "};
 array<string, PARTS_SIZE> base = {" : ", "\" \"", "___", "   "};
-int arr[SIZE];
+array<int, SIZE> arr;
 bool flag = false;
 
 /*inner function for input validity checkout*/
@@ -25,7 +35,7 @@ void inputCheck(int num) {
     if (components.length() != SIZE) {
         throw length_error{"Invalid code "};
     }
-    if (num <= 0){
+    if (num <= 0) {
         throw out_of_range{"input must be positive!"};
     }
     for (int i = 0; i < SIZE; ++i) {
@@ -38,42 +48,44 @@ void inputCheck(int num) {
 namespace ariel {
     string snowman(int num) {
         inputCheck(num);
-        int input;
         string components = to_string(num);
         string ans;
         //initiating arr in the wanted printing order
-        arr[0] = components[0] - '0';//hat
-        arr[2] = components[1] - '0';//nose
-        arr[1] = components[2] - '0';//leftEye
-        arr[3] = components[3] - '0';//rightEye
-        arr[4] = components[4] - '0';//leftArm
-        arr[6] = components[5] - '0';//rightArm
-        arr[5] = components[6] - '0';//torso
-        arr[7] = components[7] - '0';//base
+        arr[hatIndex] = components[hatIndex] - '0';//hat
+        arr[noseIndex] = components[noseIndex - 1] - '0';//nose
+        arr[leftEyeIndex] = components[leftEyeIndex + 1] - '0';//leftEye
+        arr[rightEyeIndex] = components[rightEyeIndex] - '0';//rightEye
+        arr[leftArmIndex] = components[leftArmIndex] - '0';//leftArm
+        arr[rightArmIndex] = components[rightArmIndex - 1] - '0';//rightArm
+        arr[torsoIndex] = components[torsoIndex + 1] - '0';//torso
+        arr[baseIndex] = components[baseIndex] - '0';//base
 
         for (int i = 0; i < SIZE; ++i) {
-            input = arr[i] - 1;//indexing
+            int input = arr[i] - 1;//indexing
             switch (i) {
                 //hat case
-                case 0:
+                case hatIndex:
                     //"___
                     //....."
                     if (input == 1) {
-                        ans += hat.at(1);
-                        ans += hat.at(2);
+                        int secHat = 1;
+                        ans += hat.at(secHat);
+                        ans += hat.at(secHat + 1);//second part of the hat
                     }
                         //" _
                         // /_\"
                     else if (input == 2) {
-                        ans += hat.at(3);
-                        ans += hat.at(4);
+                        int thirdHat = 3;
+                        ans += hat.at(thirdHat);
+                        ans += hat.at(thirdHat + 1);//second part of the hat
                     }
                         // ___
                         //(_*_)
                     else if (input == 3) {
-                        ans += hat.at(5);
+                        int forthHat = 5;
+                        ans += hat.at(forthHat);
                         //ans += " ";
-                        ans += hat.at(6);
+                        ans += hat.at(forthHat + 1);//second part of the hat
                     }
                         //_===_
                     else {
@@ -81,56 +93,56 @@ namespace ariel {
                     }
                     break;
 
-                //left eye case
-                case 1:
+                    //left eye case
+                case leftEyeIndex:
                     //if the left hand is up
-                    if (arr[4] == 2) {
+                    if (arr[leftArmIndex] == 2) {
                         ans += (leftArm.at(1));
                     }
                     ans += "(";
                     ans += (leftEye.at(input));
                     break;
 
-                //nose case
-                case 2:
+                    //nose case
+                case noseIndex:
                     ans += (nose.at(input));
                     break;
 
-                //right eye case
-                case 3:
+                    //right eye case
+                case rightEyeIndex:
                     ans += (rightEye.at(input));
                     ans += ")";
                     //if the right hand is up
-                    if (arr[6] == 2) {
+                    if (arr[rightArmIndex] == 2) {
                         ans += (rightArm.at(1));
                     }
                     break;
 
-                //left arm case
-                case 4:
+                    //left arm case
+                case leftArmIndex:
                     //if the hand isn't up
-                    if (arr[4] != 2) {
+                    if (arr[leftArmIndex] != 2) {
                         ans += (leftArm.at(input));
                     }
                     break;
 
-                //torso case
-                case 5:
+                    //torso case
+                case torsoIndex:
                     ans += "(";
                     ans += (torso.at(input));
                     break;
 
-                //right arm case
-                case 6:
+                    //right arm case
+                case rightArmIndex:
                     ans += ")";
                     //if the right arm isn't up
-                    if (arr[6] != 2) {
+                    if (arr[rightArmIndex] != 2) {
                         ans += (rightArm.at(input));
                     }
                     break;
 
-                //base case
-                case 7:
+                    //base case
+                case baseIndex:
                     ans += "(";
                     ans += (base.at(input));
                     ans += ")";
